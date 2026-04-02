@@ -108,7 +108,8 @@ function synthesize(waveform, params) {
 
   let hpCutoff = p.hpFilterCutoff * p.hpFilterCutoff * 0.1;
   let hpCutoffSweep = 1.0 + p.hpFilterCutoffSweep * 0.0003;
-  let hpVal = 0;
+  let fltphp = 0;
+  let pp = 0;
 
   const pjRepeat = p.pitchJumpRepeatSpeed > 0 ? Math.floor((1 - p.pitchJumpRepeatSpeed) * (1 - p.pitchJumpRepeatSpeed) * 20000 + 32) : 0;
   let pjTime = 0;
@@ -239,11 +240,13 @@ function synthesize(waveform, params) {
       sample = lpVal;
     }
 
-    // HP Filter
+    // HP Filter (sfxr-style)
     hpCutoff *= hpCutoffSweep;
-    hpCutoff = Math.max(0.00001, Math.min(0.1, hpCutoff));
-    hpVal += sample - hpVal;
-    sample -= hpVal * (1 - hpCutoff * 10);
+    hpCutoff = Math.max(0, Math.min(0.1, hpCutoff));
+    fltphp += sample - pp;
+    pp = sample;
+    fltphp *= (1.0 - hpCutoff);
+    sample = fltphp;
 
     // Flanger
     if (p.flangerOffset !== 0 || p.flangerSweep !== 0) {
