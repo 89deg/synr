@@ -9,6 +9,8 @@ let activePresetIndex = -1;
 let lastSamples = null;
 
 let audioCtx = null;
+let currentSource = null;
+
 function getAudioCtx() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   return audioCtx;
@@ -18,6 +20,12 @@ function getAudioCtx() {
 // PLAYBACK
 // ============================================================
 function playSound() {
+  // Stop previous sound if still playing
+  if (currentSource) {
+    try { currentSource.stop(); } catch(e) {}
+    currentSource = null;
+  }
+
   const ctx = getAudioCtx();
   const vol = parseFloat(document.getElementById('masterVol').value);
   const samples = synthesize(currentWaveform, currentParams);
@@ -35,6 +43,9 @@ function playSound() {
   src.connect(gain);
   gain.connect(ctx.destination);
   src.start();
+
+  currentSource = src;
+  src.onended = () => { if (currentSource === src) currentSource = null; };
 
   drawWaveform(samples);
 }
@@ -271,6 +282,12 @@ function randomize() {
       currentParams[pd.key] = pd.min + Math.random() * (pd.max - pd.min);
     }
   }));
+  // Ensure audible output: minimum duration, frequency, and safe filter values
+  if (!lockedParams.has('frequency')) currentParams.frequency = 0.15 + Math.random() * 0.7;
+  if (!lockedParams.has('sustainTime')) currentParams.sustainTime = Math.max(0.05, currentParams.sustainTime);
+  if (!lockedParams.has('decayTime')) currentParams.decayTime = Math.max(0.1, currentParams.decayTime);
+  if (!lockedParams.has('lpFilterCutoff')) currentParams.lpFilterCutoff = 0.3 + Math.random() * 0.7;
+  if (!lockedParams.has('hpFilterCutoff')) currentParams.hpFilterCutoff = Math.random() * 0.4;
   currentWaveform = WAVEFORMS[Math.floor(Math.random() * WAVEFORMS.length)];
   updateSlidersFromParams();
   autoPlayIfEnabled();
