@@ -78,10 +78,10 @@ function synthesize(waveform, params) {
 
   const samples = new Float32Array(totalSamples);
 
-  let freq = p.frequency * p.frequency * 0.01;
-  let freqSlide = p.frequencySlide * 0.01;
-  let freqDeltaSlide = p.deltaSlide * 0.000001;
-  const freqMin = p.frequencyCutoff * p.frequencyCutoff * 0.01;
+  let freq = p.frequency;
+  let freqSlide = p.frequencySlide * 0.001;
+  let freqDeltaSlide = p.deltaSlide * 0.00001;
+  const freqMin = p.frequencyCutoff;
 
   const vibDepth = p.vibratoDepth * 0.1;
   const vibSpeed = p.vibratoSpeed * p.vibratoSpeed * 0.01;
@@ -144,7 +144,7 @@ function synthesize(waveform, params) {
       if (repeatTime >= repeatLimit) {
         repeatTime = 0;
         freq = freqStart;
-        freqSlide = p.frequencySlide * 0.01;
+        freqSlide = p.frequencySlide * 0.001;
         duty = dutyStart;
         pjTime = 0;
         pjApplied1 = false;
