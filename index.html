@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SYNR - Runtime Synth Lab</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div>
+      <h1>SYNR</h1>
+      <div class="sub">Runtime Synth Lab &middot; Bfxr-kompatibel &middot; JSON Export</div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- LEFT -->
+    <div>
+      <div class="panel">
+        <div class="panel-title">Waveform</div>
+        <div id="waveButtons"></div>
+      </div>
+      <div style="height:8px"></div>
+      <div class="panel">
+        <div class="panel-title">Generators</div>
+        <button class="gen-btn" onclick="generate('pickup')">Pickup/Coin</button>
+        <button class="gen-btn" onclick="generate('laser')">Laser/Shoot</button>
+        <button class="gen-btn" onclick="generate('explosion')">Explosion</button>
+        <button class="gen-btn" onclick="generate('powerup')">Powerup</button>
+        <button class="gen-btn" onclick="generate('hit')">Hit/Hurt</button>
+        <button class="gen-btn" onclick="generate('jump')">Jump</button>
+        <button class="gen-btn" onclick="generate('blip')">Blip/Select</button>
+        <div class="divider"></div>
+        <button class="gen-btn" onclick="randomize()">Randomize</button>
+        <button class="gen-btn" onclick="mutate()">Mutate</button>
+      </div>
+    </div>
+
+    <!-- CENTER -->
+    <div class="panel sliders">
+      <div class="viz"><canvas id="vizCanvas"></canvas></div>
+      <div id="sliderContainer"></div>
+    </div>
+
+    <!-- RIGHT -->
+    <div>
+      <div class="panel">
+        <button class="play-btn" onclick="playSound()">PLAY</button>
+        <div class="cb-row">
+          <input type="checkbox" id="autoPlay" checked>
+          <label for="autoPlay">Play on change</label>
+        </div>
+        <div class="volume-row">
+          <span>Vol</span>
+          <input type="range" id="masterVol" min="0" max="1" step="0.01" value="0.5">
+        </div>
+      </div>
+      <div style="height:8px"></div>
+      <div class="panel">
+        <div class="panel-title">Presets</div>
+        <div class="preset-list" id="presetList"></div>
+        <button class="action-btn" onclick="savePreset()">Save Current</button>
+        <div style="height:4px"></div>
+        <button class="action-btn" onclick="duplicatePreset()">Duplicate</button>
+      </div>
+      <div style="height:8px"></div>
+      <div class="panel">
+        <div class="panel-title">Export</div>
+        <button class="action-btn export" onclick="exportJSON()">Export All JSON</button>
+        <div style="height:4px"></div>
+        <button class="action-btn export" onclick="exportCurrentJSON()">Export Current</button>
+        <div style="height:4px"></div>
+        <button class="action-btn export" onclick="exportWAV()">Export WAV</button>
+        <div style="height:4px"></div>
+        <button class="action-btn" onclick="importJSON()">Import JSON</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <a href="impressum.html">Impressum</a>
+    <a href="datenschutz.html">Datenschutz</a>
+    <a href="nutzungsbedingungen.html">Nutzungsbedingungen</a>
+    <a href="mailto:hello@89deg.com">Kontakt</a>
+  </footer>
+</div>
+
+<!-- JSON Modal -->
+<div class="modal-overlay" id="jsonModal">
+  <div class="modal">
+    <h3 id="modalTitle">JSON Export</h3>
+    <textarea id="jsonArea" spellcheck="false"></textarea>
+    <div class="modal-actions">
+      <button onclick="copyJSON()">Copy</button>
+      <button onclick="downloadJSON()">Download</button>
+      <button onclick="closeModal()">Close</button>
+      <button class="primary" id="modalImportBtn" style="display:none" onclick="doImport()">Import</button>
+    </div>
+  </div>
+</div>
+
+<script src="synth.js"></script>
+<script src="ui.js"></script>
+</body>
+</html>
